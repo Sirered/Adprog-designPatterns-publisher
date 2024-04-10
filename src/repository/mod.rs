@@ -1,2 +1,2 @@
 pub mod product;
-mod subscriber;
+pub mod subscriber;
