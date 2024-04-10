@@ -1,3 +1,3 @@
 pub mod product;
-mod subscriber;
-mod notification;
+pub mod subscriber;
+pub mod notification;
