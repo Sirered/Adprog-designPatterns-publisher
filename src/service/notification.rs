@@ -44,7 +44,7 @@ impl NotificationService{
             payload.subscriber_name = subscriber.clone().name;
             let subscriber_clone = subscriber.clone();
             let payload_clone = payload.clone();
-            thread::spawn(move || subscriber_clone.update(payload_clone))
+            thread::spawn(move || subscriber_clone.update(payload_clone));
         }
     }
 }
