@@ -78,6 +78,27 @@ This is the place for you to write reflections:
 
 #### Reflection Publisher-1
 
+1. As far as I can tell, the only reason we would need an interface or trait in our program, is if we intend to have more than one type of Subscriber-Subject relation in our project other than the current User Subscriber- Product Type relation we have now. This is because the interface would only be used to define what a subscriber and what a subject must do, so if we have multiple types of observer-subject relations, we can use the same or similar structs or functions to manipulate and utilise different types of observer-subject relations without too much concern, since the interfaces would put a contract in place stating what functions need to exist for every observer and for every subject. 
+
+This is less necessary if we only intend to have one type of observer-subject relation, since there would only be one set of structs to implement one observer-subject relation, so the advantage of being able to utilise similar code for different types of subject-observer relationships is not helpful at all. In fact it may be a hindrance, since adding such an interface that is only used by one class, can add unnecessary complexity and may cause refactoring and updating the Subscriber and Observers to be more tedious, without there being any real benefit to do so.
+
+
+However, it is worth noting that if we intend to add more features later on and want to use the Observer pattern in the future, it may be better to add the interface, for scalibility's, as having such an interface and coding the structs using those interfaces would adhere to the Dependency Inversion and Open Closed Principles of SOLID
+
+
+2. Technically, you can use Vec(lists) to implement the repositories, but that would be unnecessarily tedious, as you would need to check if a program already has that id or if a subscriber already has that url whenever you try to add a program/subscriber. On a list, that type of search would be O(n) time complexity, which would be absurd to do if we can just use a Dashmap, which already has handling of unique keys such as id and url built in (since all keys in a dictionary are unique and if you try to add an item with an id that already exists, it would replace the old value), as well as would be O(1) time complexity to check if that key already exists (which is useful if you want to handle such cases differently). Furthermore, searching for any subscriber or program would also take O(n) time complexity. With more subscribers, this O(n) time complexity could pose a real problem, especially if we consider the possibility of multiple people accessing the repository at the same time, which could cause some performance issues.
+
+
+Hence, although you can **technically** implement such with Vec, thus meaning Vec is a **sufficient** data structure to use, I would advise against doing such and just use the dictionary instead to handle repository data, especially if there are unique values that can act as keys that each program and subscriber must have.
+
+3. From what I can tell, the use of a Dashmap and the implementation of the Singleton design pattern aren't mutually exclusive, in fact I believe that the implementation of the Product and Subscriber Repositories are both examples of the Singleton design pattern. The Singleton Design pattern just states that instead of providing a constructor of an object when users want to access an object of that class (like a database), they are instead given a static method that gives them a static instance of that class, only ever creating an instance of the class if none exist. This guarantees that there is only ever one instance of a class and that users can't make their own instances of the class, which is advantageous for security reasons (e.g. you don't want users making their own instances of database connections to your database). 
+
+
+In the code we see that there is only one static instance of the Dashmap that acts as our repository as the static variable PRODUCTS or SUBSCRIBERS, with the use of the lazy_static method (which is how we are taught to do the Singleton design pattern in the module). We access this Dashmap using that static variable and we do not create new instances of it. If another programmer wanted to access this static Dashmap, they can't just make a new Dashmap or an instance of ProductRepository, since all functions of the ProductRepository are static, so there is no point in making a new ProductRepository (plus there is no constructor), and the new Dashmap wouldn't contain any of the important data. Thus we have one static variable Dashmap, and a global access point, which the ProductRepository or SubscriberRepository struct fulfills (since the struct itself is a static instance, and you can't really make new versions of them, without it being completely different and being unable to access our repository data). 
+
+
+Overall, it seems like we already utilise the Singleton design pattern, and the use of a Dashmap (or any implementation of the design pattern, as long as it follows the rules set by the pattern) does not matter when discussing the implementation of the design pattern. 
+
 #### Reflection Publisher-2
 
 #### Reflection Publisher-3
