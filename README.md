@@ -101,4 +101,28 @@ Overall, it seems like we already utilise the Singleton design pattern, and the 
 
 #### Reflection Publisher-2
 
+
+1. The main reason we make such separations is to fulfill the Single Responsibility Principle. Instead of the model classes having to handle all of the business or storing logic, the model classes are only responsible for representing the data. This makes it easier for us to convert from class to SQL and vice versa, as there is no information regarding business or storage methods that would muddle up the data being stored. Furthermore, it makes it easier to test and review the code, as the types of methods are separate, neat and unmuddled, making it easier to design simple tests and to find bugs in the codebase.
+
+2. If we were to have all code regarding a specific model be all in that Model's class, it would be absurd and immensely complex. Firstly, it would be absurdly long, since you would need to contain the business, storing and controller (I'm assuming the question is also asking without Controller as well), would all have to be on one file, which will be a slog to get to.
+
+To store the data, you would likely use a static list or dictionary in each model, that contains all instances of that class, and to make any changes made to an instance of a certain model to stick, you would need to update that static dictionary. If any of the models depend on another model, for example, notification has a subscriber and a product/program that it is associated with, thus it would need to access the dictionaries of the other 2 models, or you have to make methods for each model that would facilitate acts like fetching, adding or saving in the other models, which will further increase the amount of code, making it even more complex. 
+
+
+Also, these methods that add to the dictionary would have to be static, which isn't really a problem in rust, but in programming languages like Java, where you can call static methods from instances of that class, it may be confusing whether the add method is for adding a subscriber to the dictionary or if it's to add a program to a subscriber's list for exxample
+
+
+Furthermore, this structure would be incredibly coupled, so if any change is made to any method for any model, there could very easily be a side-effect that causes a method in another model to break. This would be quite a conundrum to solve, because with all methods being in only 3 classes, tracking the root of the problem will be challenging (even if you only make one change at a time, since the problem may be a method that was working before with previous implementation, but no longer works properly after a certain change, even if the problem method remains unchanged), and there is a very real possibility that the change to fix the problem can cause something else to break.
+
+
+Overall, this would break multiple SOLID and Clean Code principles, which will cause maintainability to plummet and likelihood of rage to skyrocket.
+
+
+3. Firstly, the main reason we would use Postman is to test API and backend responses to see what data is being sent and the format of such. Since we can put them into collections, run all requests in a collection at once, as well as automate these runs (apparently it's also possible to integrate it with CI/CD) it would be an invaluable resource to quickly analyse the data being sent by all endpoints. This is helpful for back-end programmers to make sure their programs are working, while it is helpful for front-end programmers to know what they are getting from each endpoint and the format, so they can effectively serve their data (this is what we did when we had to check json data that was being sent to flutter mobile apps). 
+
+They also apparently allow us to set tests, giving us a good method to do tests on our application, that may be difficult depending on the framework and language that the application is made with. To further this point, we can set environment variables and scripts run on every request, so we can have variables and processes that run before every request for isolated testing.
+
+Lastly, Postman allows us to easily create documentation for a collection of requests and responses, so you can create the requests, run them to get the responses, then use Postman's tools to make documentation out of it, so you can easily document and share what you can/should be able to do with the application and what the expected response is for each, so front-end developers have kind of cheat sheet as to what they can do, and back-end developers have a guide as to what the response should be like even after refactoring.
+
+
 #### Reflection Publisher-3
