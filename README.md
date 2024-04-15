@@ -126,3 +126,19 @@ Lastly, Postman allows us to easily create documentation for a collection of req
 
 
 #### Reflection Publisher-3
+
+
+1. It is a Push model, since whenever there is a change in the Product Service, such as the creation or the deletion of a product, a notification is made/pushed to all subscribers that is subscribed to thje product type that that created/deleted product has using the NotificationService's notify method that we had implemented.
+
+2. 
+Advantages:
+
+The observer can choose when to get their updates, so if there are cases where certain observers are unresponsive/only on when the user is using the application (for example classes on front-end of a flutter mobile app), they can make it so that they get notifications/updates when the application is opened after some time of inactivity, instead of it being sent out whenever a change happens, in which case the application may not be active to catch it. It also makes it so that you don't have to push an update to EVERY observer on every change all at once, which would reduce overhead (since the frequency and amount being sent won't be too numerous) and latency (since a create won't cause a massive amount of update/notification functions to be run). It could also increase scalability, since updates are handled by each observer rather than it being handled entirely by the publisher, who would have to slave away until every observer is updated after any update if we use the push model.
+
+
+Disadvantages:
+
+We would have to ensure that we choose proper intervals or events as to when the observer performs a pull. If we make the intervals too short, we would end with a lot of instances of repeatedly and unnecessarily asking for updates, when no updates may have happened. This would actually badwidth usage and server load due to the frequency of unnecessary requests. However, if the intervals are too long or in cases where an update happens after the pull request, we may have occurences where data from the observer's side may be severely out of sync from the server and lacking crucial information, which would be especially detrimental in applications that require quick/real-time updates and responses. 
+
+
+3. If we didn't use multithreading, we would have to wait for the notification of every single observer whenever a product is created or deleted, before we can finish the current request nor serve other requests that may or may not require notification. This would mean users who created somthing would notice that their requests take time, and other users who just so happen to request something when another user has just made a creation o deletion request, would also face similar lag even if they are requesting for something the shouldn't be heavy computationally, This latency would be unbearable as we increase the amount of observers/subscribers we have, so it would not scale as our service becomes larger. 
